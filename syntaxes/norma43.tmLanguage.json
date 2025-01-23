@@ -1,0 +1,113 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Norma 43",
+  "patterns": [
+    {
+      "include": "#keywords"
+    }
+  ],
+  "repository": {
+    "keywords": {
+      "patterns": [
+        {
+          "name": "constant.regexp.norma43",
+          "match": "\\b(11)([\\d]{4})([\\d]{4})([\\d]{10})([\\d]{6})([\\d]{6})([\\d]{1})([\\d]{14})([\\d]{3})([\\d]{1})(.{26})(.{3})",
+          "captures": {
+            "1": { "name": "keyword.control.norma43" },
+            "2": { "name": "constant.regexp" },
+            "3": { "name": "constant.numeric" },
+            "4": { "name": "comment" },
+            "5": { "name": "date" },
+            "6": { "name": "support.function" },
+            "7": { "name": "variable" },
+            "8": { "name": "invalid.deprecated" },
+            "9": { "name": "comment" },
+            "10": { "name": "date" },
+            "11": { "name": "support.function" }
+          }
+        },
+        {
+          "name": "constant.regexp.norma43",
+          "match": "\\b(22)(.{4})([\\d]{4})([\\d]{6})([\\d]{6})([\\d]{2})([\\d]{3})([\\d]{1})([\\d]{14})([\\d]{10})(.{12})(.{16})",
+          "captures": {
+            "1": { "name": "keyword.control.norma43" },
+            "2": { "name": "constant.regexp" },
+            "3": { "name": "constant.numeric" },
+            "4": { "name": "comment" },
+            "5": { "name": "date" },
+            "6": { "name": "support.function" },
+            "7": { "name": "variable" },
+            "8": { "name": "invalid.deprecated" },
+            "9": { "name": "comment" },
+            "10": { "name": "constant.regexp" },
+            "11": { "name": "support.function" }
+          }
+        },
+        {
+          "name": "constant.regexp.norma43",
+          "match": "\\b(23)([\\d]{2})(.{38})(.{38})",
+          "captures": {
+            "1": { "name": "keyword.control.norma43" },
+            "2": { "name": "constant.regexp" },
+            "3": { "name": "constant.numeric" },
+            "4": { "name": "comment" }
+          }
+        },
+        {
+          "name": "constant.regexp.norma43",
+          "match": "\\b(24)(01)([\\d]{3})([\\d]{14})(.{59})",
+          "captures": {
+            "1": { "name": "keyword.control.norma43" },
+            "2": { "name": "constant.regexp" },
+            "3": { "name": "constant.numeric" },
+            "4": { "name": "comment" },
+            "5": { "name": "date" }
+          }
+        },
+        {
+          "name": "constant.regexp.norma43",
+          "match": "\\b(33)([\\d]{4})([\\d]{4})([\\d]{10})([\\d]{5})([\\d]{14})([\\d]{5})([\\d]{14})([\\d]{1})(.{14})(.{3})(.{4})",
+          "captures": {
+            "1": { "name": "keyword.control.norma43" },
+            "2": { "name": "constant.regexp" },
+            "3": { "name": "constant.numeric" },
+            "4": { "name": "comment" },
+            "5": { "name": "date" },
+            "6": { "name": "support.function" },
+            "7": { "name": "variable" },
+            "8": { "name": "invalid.deprecated" },
+            "9": { "name": "comment" },
+            "10": { "name": "constant.regexp" },
+            "11": { "name": "support.function" }
+          }
+        },
+        {
+          "name": "constant.regexp.norma43",
+          "match": "\\b(88)(9{18})([\\d]{6})(.{54})",
+          "captures": {
+            "1": { "name": "keyword.control.norma43" },
+            "2": { "name": "constant.regexp" },
+            "3": { "name": "constant.numeric" },
+            "4": { "name": "comment" },
+            "5": { "name": "date" },
+            "6": { "name": "support.function" },
+            "7": { "name": "variable" },
+            "8": { "name": "invalid.deprecated" },
+            "9": { "name": "comment" },
+            "10": { "name": "constant.regexp" },
+            "11": { "name": "support.function" }
+          }
+        },
+        {
+          "name": "comment.norma43",
+          "match": "(--SUC--)"
+        },
+        {
+          "name": "invalid.norma43",
+          "match": "(--ERR--)"
+        }
+      ]
+    }
+  },
+  "scopeName": "source.norma43"
+}
