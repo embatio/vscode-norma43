@@ -12,6 +12,10 @@ Once the file is formatted, the extension will highlight the lines with colors f
 
 ## Release Notes
 
+### 1.0.0
+
+- Add hovering information for each registry.
+
 ### 0.0.1
 
 Initial release of the extension.

@@ -1,9 +1,10 @@
 import vscode from 'vscode'
+import { getDescription } from './getDescription'
 
 const COMPLETE_LINE_WIDTH = 80
 
 // This method is called when your extension is activated
-export function activate() {
+export function activate(context: vscode.ExtensionContext) {
   vscode.languages.registerDocumentFormattingEditProvider('norma43', {
     provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
       const modifiedLines: vscode.TextEdit[] = []
@@ -39,6 +40,27 @@ export function activate() {
       return modifiedLines
     },
   })
+
+  let disposable = vscode.languages.registerHoverProvider(
+    { language: 'norma43' },
+    {
+      provideHover(document, position, token) {
+        return provideMyHover(document, position, token)
+      },
+    }
+  )
+
+  context.subscriptions.push(disposable)
+}
+
+function provideMyHover(
+  document: vscode.TextDocument,
+  position: vscode.Position,
+  _token: vscode.CancellationToken
+): vscode.ProviderResult<vscode.Hover> {
+  const line = document.lineAt(position.line).text
+
+  return getDescription(position, line)
 }
 
 // This method is called when your extension is deactivated
