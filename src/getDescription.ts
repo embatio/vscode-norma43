@@ -1,68 +1,63 @@
 import vscode from 'vscode'
-import { extractorByPosition, isInBetween } from './utils/utils'
-import { getDispatchFunction } from './dispatchFunctions'
-import { Norma43Registry } from './interfaces'
+import { Norma43Registry, RegistryPosition } from './interfaces'
 import { accountStartRegistries } from './locale/en/accountStartRegistries'
-
-export enum AccountStartRegistry {
-  recordCode = 'recordCode',
-  entityKey = 'entityKey',
-  officeKey = 'officeKey',
-  accountNumber = 'accountNumber',
-  startDate = 'startDate',
-  endDate = 'endDate',
-  debitCreditKey = 'debitCreditKey',
-  initialBalance = 'initialBalance',
-  currencyKey = 'currencyKey',
-  mode = 'mode',
-  abbreviatedName = 'abbreviatedName',
-  freeField = 'freeField',
-}
-
-const accountStartRegistryPosition: Record<string, [number, number]> = {
-  [AccountStartRegistry.recordCode]: [1, 2],
-  [AccountStartRegistry.entityKey]: [3, 4],
-  [AccountStartRegistry.officeKey]: [7, 4],
-  [AccountStartRegistry.accountNumber]: [11, 10],
-  [AccountStartRegistry.startDate]: [21, 6],
-  [AccountStartRegistry.endDate]: [27, 6],
-  [AccountStartRegistry.debitCreditKey]: [33, 1],
-  [AccountStartRegistry.initialBalance]: [34, 14],
-  [AccountStartRegistry.currencyKey]: [48, 3],
-  [AccountStartRegistry.mode]: [51, 1],
-  [AccountStartRegistry.abbreviatedName]: [52, 26],
-  [AccountStartRegistry.freeField]: [78, 3],
-}
-
-function extractByRegistry(registryPosition: Record<string, [number, number]>, registry: string, line: string) {
-  if (!registryPosition[registry]) {
-    throw new Error(`Registry ${registry} not found`)
-  }
-
-  const [start, length] = registryPosition[registry]
-  return extractorByPosition(line, start, length)
-}
+import { getDispatchFunction } from './utils/dispatchFunctions'
+import { extractByRegistry, extractRegistryDescription, generateRange, getRegistry } from './utils/utils'
+import { accountStartRegistryPosition } from './registries/accountStart'
+import { complementaryConceptRegistryPosition } from './registries/complementaryConcept'
+import { accountEndRegistries } from './locale/en/accountEndRegistries'
+import { accountEndRegistryPosition } from './registries/accountEnd'
+import { equivalentAmountRegistryPosition } from './registries/equivalentAmount'
+import { complementaryConceptRegistries } from './locale/en/complementaryConceptRegistries'
+import { equivalentAmountRegistries } from './locale/en/equivalentAmountRegistries'
+import { footerRegistries } from './locale/en/footerRegistries'
+import { footerRegistryPosition } from './registries/footer'
+import { mainMovementRegistries } from './locale/en/mainMovementRegistries'
+import { mainMovementRegistryPosition } from './registries/mainMovement'
 
 export function getDescription(position: vscode.Position, line: string) {
   if (line.startsWith('11')) {
-    const registry = isInBetween(position.character, accountStartRegistryPosition)
-
-    if (!registry) {
-      return
-    }
-
-    return composeMarkdown(registry as AccountStartRegistry, position, line)
+    return getMarkdown(position, line, accountStartRegistryPosition, accountStartRegistries)
+  } else if (line.startsWith('22')) {
+    return getMarkdown(position, line, mainMovementRegistryPosition, mainMovementRegistries)
+  } else if (line.startsWith('23')) {
+    return getMarkdown(position, line, complementaryConceptRegistryPosition, complementaryConceptRegistries)
+  } else if (line.startsWith('24')) {
+    return getMarkdown(position, line, equivalentAmountRegistryPosition, equivalentAmountRegistries)
+  } else if (line.startsWith('33')) {
+    return getMarkdown(position, line, accountEndRegistryPosition, accountEndRegistries)
+  } else if (line.startsWith('88')) {
+    return getMarkdown(position, line, footerRegistryPosition, footerRegistries)
   }
 }
 
-function composeMarkdown(registry: AccountStartRegistry, position: vscode.Position, line: string) {
-  let word = extractByRegistry(accountStartRegistryPosition, registry, line)
-  const registryDescription = extractRegistryDescription(registry)
+function getMarkdown(
+  position: vscode.Position,
+  line: string,
+  registryPosition: RegistryPosition,
+  registryDefinitions: Norma43Registry[]
+) {
+  const registry = getRegistry(position.character, registryPosition)
+
+  if (!registry) {
+    return
+  }
+
+  return composeMarkdown(registry, position, line, registryPosition, registryDefinitions)
+}
+
+function composeMarkdown(
+  registry: string,
+  position: vscode.Position,
+  line: string,
+  registryPosition: RegistryPosition,
+  registryDefinitions: Norma43Registry[]
+) {
+  let word = extractByRegistry(line, registry, registryPosition)
+  const registryDescription = extractRegistryDescription(registry, registryDefinitions)
 
   if (registryDescription?.transformFunction) {
-    const extraArgs = registryDescription.extraArgs?.map((arg) =>
-      extractByRegistry(accountStartRegistryPosition, arg, line)
-    )
+    const extraArgs = registryDescription.extraArgs?.map((arg) => extractByRegistry(line, arg, registryPosition))
     const transformedWord = getDispatchFunction(registryDescription.transformFunction)(word, ...(extraArgs ?? []))
     word = transformedWord
   }
@@ -82,14 +77,5 @@ function composeMarkdown(registry: AccountStartRegistry, position: vscode.Positi
     markdownString.appendMarkdown(`*@see* — ${registryDescription.seeMore}`)
   }
 
-  return new vscode.Hover(markdownString, generateRange(position.line, registry))
-}
-
-function generateRange(lineIndex: number, registry: AccountStartRegistry) {
-  const [start, length] = accountStartRegistryPosition[registry]
-  return new vscode.Range(new vscode.Position(lineIndex, start - 1), new vscode.Position(lineIndex, start + length - 1))
-}
-
-function extractRegistryDescription(registry: AccountStartRegistry): Norma43Registry | undefined {
-  return accountStartRegistries.find((item) => item.id === registry)
+  return new vscode.Hover(markdownString, generateRange(position.line, registry, registryPosition))
 }

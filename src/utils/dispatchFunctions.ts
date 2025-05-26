@@ -1,5 +1,5 @@
 import vscode from 'vscode'
-import { convertCurrency, convertToDebitCreditKey, convertToNumber } from './utils/utils'
+import { convertCurrency, convertToDebitCreditKey, convertToNumber } from './utils'
 
 export function getDispatchFunction(functionName: string) {
   const functionToDispatch = functionDispatch[functionName]
@@ -31,9 +31,13 @@ function transformCurrencyKey(currencyKey: string) {
   return convertCurrency(currencyKey) || currencyKey
 }
 
-function transformAmount(amount: string, debitCreditKey: string) {
-  const amountValue = convertToNumber(amount)
-  const debitCredit = convertToDebitCreditKey(debitCreditKey)
+function transformNumber(number: string) {
+  return convertToNumber(number).toString()
+}
+
+function transformAmount(amount: string, debitCreditKey?: string) {
+  const amountValue = convertToNumber(amount, 2)
+  const debitCredit = debitCreditKey ? convertToDebitCreditKey(debitCreditKey) : 'Debit'
 
   const value = debitCredit === 'Debit' ? amountValue : -amountValue
 
@@ -45,4 +49,5 @@ const functionDispatch: Record<string, (...args: string[]) => string> = {
   transformDebitCreditKey,
   transformCurrencyKey,
   transformAmount,
+  transformNumber,
 }
