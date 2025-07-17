@@ -12,6 +12,14 @@ Once the file is formatted, the extension will highlight the lines with colors f
 
 ## Release Notes
 
+### 1.0.2
+
+- Fix amount calculation for account end Debit/Credit records.
+
+### 1.0.1
+
+- Fix debit / credit amount calculation.
+
 ### 1.0.0
 
 - Add hovering information for each registry.

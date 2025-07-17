@@ -44,10 +44,20 @@ function transformAmount(amount: string, debitCreditKey?: string) {
   return value.toLocaleString(vscode.env.language)
 }
 
+function transformPositiveAmount(amount: string) {
+  return transformAmount(amount, '2')
+}
+
+function transformNegativeAmount(amount: string) {
+  return transformAmount(amount, '1')
+}
+
 const functionDispatch: Record<string, (...args: string[]) => string> = {
   transformDate,
   transformDebitCreditKey,
   transformCurrencyKey,
   transformAmount,
+  transformPositiveAmount,
+  transformNegativeAmount,
   transformNumber,
 }

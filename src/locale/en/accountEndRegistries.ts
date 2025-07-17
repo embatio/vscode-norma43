@@ -36,7 +36,7 @@ export const accountEndRegistries: Norma43Registry[] = [
     id: 'totalDebitAmount',
     name: 'Total debit amount',
     description: 'Sum of the amounts of debit movements.',
-    transformFunction: 'transformAmount',
+    transformFunction: 'transformNegativeAmount',
   },
   {
     id: 'creditNotesNumber',
@@ -48,7 +48,7 @@ export const accountEndRegistries: Norma43Registry[] = [
     id: 'totalCreditAmount',
     name: 'Total credit amount',
     description: 'Sum of the amounts of credit movements.',
-    transformFunction: 'transformAmount',
+    transformFunction: 'transformPositiveAmount',
   },
   {
     id: 'finalBalanceCode',
