@@ -39,7 +39,7 @@ function transformAmount(amount: string, debitCreditKey?: string) {
   const amountValue = convertToNumber(amount, 2)
   const debitCredit = debitCreditKey ? convertToDebitCreditKey(debitCreditKey) : 'Debit'
 
-  const value = debitCredit === 'Debit' ? amountValue : -amountValue
+  const value = debitCredit === 'Credit' ? amountValue : -amountValue
 
   return value.toLocaleString(vscode.env.language)
 }
